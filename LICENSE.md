@@ -1,4 +1,4 @@
-Composer Scaffold Plugin / External composer command to scaffold a plugin with the "BEA Plugin Boilerplate".
+Composer Scaffold Theme / External composer command to scaffold a theme with the "BeAPI FrontEnd Framework".
 
 Copyright 2017-2018 Be API and contributors
 
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 This program incorporates work covered by the following copyright and
 permission notices:
 
-  Composer Scaffold Plugin / External composer command to scaffold a plugin with the "BEA Plugin Boilerplate".
+  Composer Scaffold Theme / External composer command to scaffold a theme with the "BeAPI FrontEnd Framework".
 
   Copyright 2017-2018 Be API and contributors
 
@@ -706,6 +706,6 @@ Public License instead of this License.  But first, please read
 WRITTEN OFFER
 
 The source code for any program binaries or compressed scripts that are
-included with Composer Scaffold Plugin can be freely obtained at the following URL:
+included with Composer Scaffold Theme can be freely obtained at the following URL:
 
-    https://github.com/BeAPI/composer-scaffold-plugin/
+    https://github.com/BeAPI/composer-scaffold-theme

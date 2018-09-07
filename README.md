@@ -32,4 +32,4 @@ If you really like what we do or want to thank us for our quick work, feel free 
 
 ## License
 
-Composer Freeze Version is licensed under the [GPLv3 or later](LICENSE.md).
+Composer Scaffold Theme is licensed under the [GPLv3 or later](LICENSE.md).

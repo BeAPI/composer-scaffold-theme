@@ -1,6 +1,7 @@
 <?php namespace BEA\Composer\ScaffoldTheme\Command;
 
 use Composer\Command\BaseCommand;
+use Composer\Composer;
 use Composer\Package\Package;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -8,6 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ScaffoldThemeCommand extends BaseCommand {
+
+	const WP_THEME_PACKAGE_TYPE = 'wordpress-theme';
 
 	/**
 	 * url to download zip file
@@ -51,9 +54,9 @@ class ScaffoldThemeCommand extends BaseCommand {
 		}
 
 		$downloadPath = $composer->getConfig()->get( 'vendor-dir' ) . '/starter-theme';
-		$themePath    = dirname( $composer->getConfig()->get( 'vendor-dir' ) ) . '/content/themes';
+		$themePath    = $this->getInstallPath( $themeName, $composer );
 
-		if ( is_dir( $this->set_theme_relative_path( $themePath, $themeName ) ) ) {
+		if ( is_dir( $themePath ) ) {
 			$io->write( "oops! Theme already exist" );
 			exit;
 		}
@@ -182,32 +185,14 @@ class ScaffoldThemeCommand extends BaseCommand {
 			exit;
 		}
 
-		if ( ! is_writable( $themePath ) ) {
-			$io->write( "oops! Themes directory is not writable" );
-			exit;
-		}
+		mkdir( $themePath, 0777, true );
 
-		mkdir( $this->set_theme_relative_path( $themePath, $themeName ), 0777, true );
-
-		$this->recursive_copy( $downloadPath, $this->set_theme_relative_path( $themePath, $themeName ) );
+		$this->recursive_copy( $downloadPath, $themePath );
 
 		$themeNamespace    = $this->askAndConfirm( $io, "\nWhat is your theme's namespace ? (e.g: 'BEA\\Theme\\Framework')" );
-		$themeCompletePath = $this->set_theme_relative_path( $themePath, $themeName ) . '/';
 
-		$this->doStrReplace( $themeCompletePath, 'BEA\\Theme\\Framework', $themeNamespace );
-		$this->replaceHeaderStyle( $themeCompletePath, static::$search, $themeCompleteName );
-	}
-
-
-	/**
-	 * @param $themePath
-	 * @param $themeName
-	 *
-	 * @return string
-	 * @author Julien Maury
-	 */
-	private function set_theme_relative_path( $themePath, $themeName ) {
-		return $themePath . '/' . $themeName;
+		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
+		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
 	}
 
 	/**
@@ -222,5 +207,21 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$p->setDistUrl( self::$zip_url );
 
 		return $p;
+	}
+
+	/**
+	 * Create dummy wordpress-theme package to get the installation path
+	 *
+	 * @param string $themeName
+	 * @param Composer $composer
+	 *
+	 * @return string
+	 */
+	protected function getInstallPath( $themeName, $composer ) {
+		$theme = new Package( $themeName, 'dev-master', 'Latest' );
+		$theme->setType( self::WP_THEME_PACKAGE_TYPE );
+		$path = $composer->getInstallationManager()->getInstallPath( $theme );
+
+		return \rtrim( $path, '/' ) . '/';
 	}
 }

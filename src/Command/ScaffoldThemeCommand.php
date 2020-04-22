@@ -69,7 +69,8 @@ class ScaffoldThemeCommand extends BaseCommand {
 		}
 
 		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath );
-		$io->write( "\nYour theme is ready ! :)" );
+		$io->success( "\nYour theme is ready ! :)" );
+		$io->success( 'Run composer dump-autoload to make the autoloading work :)' );
 	}
 
 	/**

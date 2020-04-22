@@ -2,6 +2,7 @@
 
 use Composer\Command\BaseCommand;
 use Composer\Composer;
+use Composer\Json\JsonFile;
 use Composer\Package\Package;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,6 +67,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 			$io->write( "You did not provide any real name so I take the folder name by default." );
 			$themeCompleteName = $themeName;
 		}
+
 		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath );
 		$io->write( "\nYour theme is ready ! :)" );
 	}
@@ -193,6 +195,27 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
 		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
+
+		/**
+		 * Add the new namespace to the autoload entry of the composer.json file.
+		 *
+		 */
+		$composerPath = $composer->getConfig()->getConfigSource()->getName();
+		$composerFile = new JsonFile( $composerPath );
+
+		try {
+			$composerJson = $composerFile->read();
+			$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = $themePath.'/inc/';
+
+
+			$composerFile->write( $composerJson );
+			$output->writeln( "The namespace have been added to the composer.json file !" );
+		} catch ( RuntimeException $e ) {
+			$output->writeln( "<error>An error occurred</error>" );
+			$output->writeln( sprintf( "<error>%s</error>", $e->getMessage() ) );
+			exit;
+		}
+
 	}
 
 	/**

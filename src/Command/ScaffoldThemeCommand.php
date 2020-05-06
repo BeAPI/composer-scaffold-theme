@@ -6,6 +6,7 @@ use Composer\Json\JsonFile;
 use Composer\Package\Package;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -27,7 +28,9 @@ class ScaffoldThemeCommand extends BaseCommand {
 	protected function configure() {
 		$this->setName( 'scaffold-theme' )
 		     ->setDescription( 'Bootstrap a new WordPress theme using Be API\'s frontend framework.' )
-		     ->addArgument( 'folder', InputArgument::REQUIRED, "Your theme's folder name" );
+		     ->addArgument( 'folder', InputArgument::REQUIRED, "Your theme's folder name" )
+		     ->addOption( 'boilerplate-version', null, InputOption::VALUE_OPTIONAL, 'Wich version to use ?', 'Latest' )
+		     ->addOption( 'no-autoload', null, InputOption::VALUE_NONE, 'Autoload the class into composer.json' );
 	}
 
 	protected function execute( InputInterface $input, OutputInterface $output ) {
@@ -35,6 +38,8 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$io        = new SymfonyStyle( $input, $output );
 		$composer  = $this->getComposer();
 		$themeName = $input->getArgument( 'folder' );
+		$version    = $input->getOption( 'boilerplate-version' );
+		$no_autoload = $input->getOption( 'no-autoload' );
 
 		// what is the command's purpose
 		$io->write( "\nHello, this command allows you to start a theme with the wonderful Be API theme Framework." );
@@ -68,7 +73,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 			$themeCompleteName = $themeName;
 		}
 
-		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath );
+		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $version, $no_autoload );
 		$io->success( "\nYour theme is ready ! :)" );
 		$io->success( 'Run composer dump-autoload to make the autoloading work :)' );
 	}
@@ -175,12 +180,16 @@ class ScaffoldThemeCommand extends BaseCommand {
 	 * @param $themeCompleteName
 	 * @param $downloadPath
 	 *
+	 * @param $version
+	 * @param $no_autoload
+	 *
+	 * @throws \Exception
 	 * @author Julien Maury
 	 */
-	protected function generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath ) {
+	protected function generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $version, $no_autoload ) {
 
 		if ( ! file_exists( $downloadPath . '/index.php' ) ) {
-			$composer->getDownloadManager()->download( $this->getThemePackage(), $downloadPath );
+			$composer->getDownloadManager()->download( $this->getThemePackage( $version ), $downloadPath );
 		}
 
 		if ( ! file_exists( $downloadPath . '/index.php' ) ) {
@@ -201,20 +210,22 @@ class ScaffoldThemeCommand extends BaseCommand {
 		 * Add the new namespace to the autoload entry of the composer.json file.
 		 *
 		 */
-		$composerPath = $composer->getConfig()->getConfigSource()->getName();
-		$composerFile = new JsonFile( $composerPath );
+		if ( false === $no_autoload ) {
+			$composerPath = $composer->getConfig()->getConfigSource()->getName();
+			$composerFile = new JsonFile( $composerPath );
 
-		try {
-			$composerJson = $composerFile->read();
-			$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = $themePath.'/inc/';
+			try {
+				$composerJson = $composerFile->read();
+				$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = $themePath.'/inc/';
 
 
-			$composerFile->write( $composerJson );
-			$output->writeln( "The namespace have been added to the composer.json file !" );
-		} catch ( RuntimeException $e ) {
-			$output->writeln( "<error>An error occurred</error>" );
-			$output->writeln( sprintf( "<error>%s</error>", $e->getMessage() ) );
-			exit;
+				$composerFile->write( $composerJson );
+				$output->writeln( "The namespace have been added to the composer.json file !" );
+			} catch ( RuntimeException $e ) {
+				$output->writeln( "<error>An error occurred</error>" );
+				$output->writeln( sprintf( "<error>%s</error>", $e->getMessage() ) );
+				exit;
+			}
 		}
 
 	}
@@ -222,13 +233,22 @@ class ScaffoldThemeCommand extends BaseCommand {
 	/**
 	 * Setup a dummy package for Composer to download
 	 *
+	 * @param $version
+	 *
 	 * @return Package
 	 */
-	protected function getThemePackage() {
-		$p = new Package( 'theme-framework', 'starter-php', 'Latest' );
+	protected function getThemePackage( $version ) {
+		$p = new Package( 'theme-framework', 'starter-php', $version );
 		$p->setType( 'library' );
 		$p->setDistType( 'zip' );
-		$p->setDistUrl( self::$zip_url );
+
+		$dist_url = self::$zip_url;
+
+		if (  'Latest' !== $version ) {
+			$dist_url = sprintf( 'https://github.com/BeAPI/beapi-frontend-framework/archive/%s.zip', $version );
+		}
+
+		$p->setDistUrl( $dist_url );
 
 		return $p;
 	}

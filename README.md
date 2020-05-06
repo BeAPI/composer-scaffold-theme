@@ -20,7 +20,7 @@ A simple command to generate a theme skeleton with all the cool features made by
 
 ## 2 - Run command 
 
-Then you can launch `composer scaffold-theme <folder>` :
+Then you can launch `composer scaffold-theme [--boilerplate-version [BOILERPLATE-VERSION]] [--no-autoload] <folder>` :
 
 # Who ?
 

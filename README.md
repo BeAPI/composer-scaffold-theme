@@ -14,9 +14,8 @@ A simple command to generate a theme skeleton with all the cool features made by
 
 ## 1 - Add to [Composer](http://composer.rarst.net/)
 
-- Add repository source : `{ "type": "vcs", "url": "https://github.com/BeAPI/composer-scaffold-theme" }`.
-- Include `"beapi/composer-scaffold-theme": "dev-master"` into your composer.json file as require dev.
-- Then `composer update` before use.
+- ` composer require beapi/composer-scaffold-theme`
+
 
 ## 2 - Run command 
 

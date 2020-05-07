@@ -73,7 +73,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 			$themeCompleteName = $themeName;
 		}
 
-		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $version, $no_autoload );
+		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $output, $version, $no_autoload );
 		$io->success( "\nYour theme is ready ! :)" );
 		$io->success( 'Run composer dump-autoload to make the autoloading work :)' );
 	}
@@ -180,13 +180,14 @@ class ScaffoldThemeCommand extends BaseCommand {
 	 * @param $themeCompleteName
 	 * @param $downloadPath
 	 *
+	 * @param $output
 	 * @param $version
 	 * @param $no_autoload
 	 *
 	 * @throws \Exception
 	 * @author Julien Maury
 	 */
-	protected function generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $version, $no_autoload ) {
+	protected function generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $output, $version, $no_autoload ) {
 
 		if ( ! file_exists( $downloadPath . '/index.php' ) ) {
 			$composer->getDownloadManager()->download( $this->getThemePackage( $version ), $downloadPath );

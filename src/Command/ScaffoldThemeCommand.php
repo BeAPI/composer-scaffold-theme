@@ -217,7 +217,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 			try {
 				$composerJson = $composerFile->read();
-				$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = $themePath.'/inc/';
+				$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = str_replace( '//', '/', $themePath.'/inc/' );
 
 
 				$composerFile->write( $composerJson );

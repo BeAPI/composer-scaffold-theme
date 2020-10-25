@@ -1,5 +1,11 @@
 # Changelog ##
 
+## 1.3.0 - 25 Oct 2020
+* Add support for Composer 2
+
+## 1.2.1 - 20 May 2020
+* Remove trailing slash from theme path when creating PSR4 mapping
+
 ## 1.2.1 - 20 May 2020
 * Remove trailing slash from theme path when creating PSR4 mapping
 

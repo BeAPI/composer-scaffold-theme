@@ -14,7 +14,8 @@
 		"composer/installers": "^1.5"
 	},
 	"require-dev": {
-		"composer/composer": "^1.6"
+		"composer/composer": "*",
+		"roave/security-advisories": "dev-latest"
 	},
 	"autoload": {
 		"psr-4": {

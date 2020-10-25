@@ -8,24 +8,18 @@ use Composer\Plugin\PluginInterface;
 
 class ScaffoldTheme implements PluginInterface, Capable, CommandProvider {
 
-	/**
-	 * @var Composer
-	 */
-	private $composer;
-
-	/**
-	 * @var IOInterface
-	 */
-	private $io;
-
 	public function activate( Composer $composer, IOInterface $io ) {
-		$this->composer = $composer;
-		$this->io       = $io;
+	}
+
+	public function deactivate( Composer $composer, IOInterface $io ) {
+	}
+
+	public function uninstall( Composer $composer, IOInterface $io ) {
 	}
 
 	public function getCapabilities() {
 		return [
-			'Composer\Plugin\Capability\CommandProvider' => __NAMESPACE__ . '\\ScaffoldTheme',
+			CommandProvider::class => __CLASS__,
 		];
 	}
 

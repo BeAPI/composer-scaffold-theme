@@ -190,7 +190,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 	protected function generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $output, $version, $no_autoload ) {
 
 		if ( ! file_exists( $downloadPath . '/index.php' ) ) {
-			$composer->getDownloadManager()->download( $this->getThemePackage( $version ), $downloadPath );
+			$this->downloadPackage( $composer, $this->getThemePackage( $version ), $downloadPath );
 		}
 
 		if ( ! file_exists( $downloadPath . '/index.php' ) ) {
@@ -232,6 +232,26 @@ class ScaffoldThemeCommand extends BaseCommand {
 	}
 
 	/**
+	 * Download a package.
+	 *
+	 * @param Composer $composer
+	 * @param Package $package
+	 * @param string $path
+	 */
+	protected function downloadPackage( Composer $composer, Package $package, $path ) {
+		if ( version_compare( Composer::RUNTIME_API_VERSION, '2.0', '>=' ) ) {
+			$promise = $composer->getDownloadManager()->download( $package, $path );
+			$composer->getLoop()->wait([$promise]);
+			$promise = $composer->getDownloadManager()->install($package, $path);
+			$composer->getLoop()->wait([$promise]);
+		} else {
+			$composer
+				->getDownloadManager()
+				->download($package, $path);
+		}
+	}
+
+	/**
 	 * Setup a dummy package for Composer to download
 	 *
 	 * @param $version
@@ -241,11 +261,12 @@ class ScaffoldThemeCommand extends BaseCommand {
 	protected function getThemePackage( $version ) {
 		$p = new Package( 'theme-framework', 'starter-php', $version );
 		$p->setType( 'library' );
+		$p->setInstallationSource('dist');
 		$p->setDistType( 'zip' );
 
 		$dist_url = self::$zip_url;
 
-		if (  'Latest' !== $version ) {
+		if ( 'Latest' !== $version ) {
 			$dist_url = sprintf( 'https://github.com/BeAPI/beapi-frontend-framework/archive/%s.zip', $version );
 		}
 

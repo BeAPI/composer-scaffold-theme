@@ -86,7 +86,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 	 * @author Julien Maury
 	 * @source https://stackoverflow.com/a/7775949
 	 */
-	protected static function recursive_copy( $source, $destination ) {
+	protected function recursive_copy( $source, $destination ) {
 		foreach (
 			$iterator = new \RecursiveIteratorIterator(
 				new \RecursiveDirectoryIterator( $source, \RecursiveDirectoryIterator::SKIP_DOTS ),
@@ -110,7 +110,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 	 *
 	 * @return bool
 	 */
-	protected static function doStrReplace( $path, $search, $replace = '', $extension = 'php' ) {
+	protected function doStrReplace( $path, $search, $replace = '', $extension = 'php' ) {
 
 		if ( empty( $path ) || empty( $search ) ) {
 			return false;
@@ -126,6 +126,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 			}
 		}
 
+		return true;
 	}
 
 	/**
@@ -223,7 +224,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 				$composerFile->write( $composerJson );
 				$output->writeln( "The namespace have been added to the composer.json file !" );
-			} catch ( RuntimeException $e ) {
+			} catch ( \RuntimeException $e ) {
 				$output->writeln( "<error>An error occurred</error>" );
 				$output->writeln( sprintf( "<error>%s</error>", $e->getMessage() ) );
 				exit;

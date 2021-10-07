@@ -2,6 +2,7 @@
 
 use Composer\Command\BaseCommand;
 use Composer\Composer;
+use Composer\IO\IOInterface;
 use Composer\Json\JsonFile;
 use Composer\Package\Package;
 use Symfony\Component\Console\Input\InputArgument;
@@ -202,7 +203,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 		$this->recursive_copy( $downloadPath, $themePath );
 
-		$themeNamespace    = $this->askAndConfirm( $io, "\nWhat is your theme's namespace ? (e.g: 'BEA\\Theme\\Framework')" );
+		$themeNamespace = $this->askForThemeNamespace( $io, $output );
 
 		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
 		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
@@ -289,5 +290,36 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$path = $composer->getInstallationManager()->getInstallPath( $theme );
 
 		return \rtrim( $path, '/' ) . '/';
+	}
+
+	/**
+	 * Get theme namespace.
+	 *
+	 * Check that the namespace provided by the user is not the same
+	 * as the default one.
+	 *
+	 * @param IOInterface $io
+	 * @param OutputInterface $output
+	 *
+	 * @return string
+	 */
+	protected function askForThemeNamespace( $io, $output ) {
+
+		$reserved_namespace = [ 'bea\\theme\\framework', 'beapi\\theme\\framework' ];
+		$themeNamespace = '';
+		while( empty( $themeNamespace ) ) {
+			$themeNamespace    = $this->askAndConfirm( $io, "\nWhat is your theme's namespace ? (e.g: 'BEA\\Theme\\Framework')" );
+			if ( in_array( mb_strtolower( trim( $themeNamespace ) ), $reserved_namespace, true ) ) {
+				$themeNamespace = '';
+				$output->writeln(
+					[
+						"<error>The namespace you chose is not allowed.</error>",
+						"<error>Please choose a namespace matching your project like ClientName\Theme\MyThemeName.</error>"
+					]
+				);
+			}
+		}
+
+		return $themeNamespace;
 	}
 }

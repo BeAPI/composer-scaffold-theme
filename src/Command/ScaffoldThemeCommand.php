@@ -30,7 +30,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$this->setName( 'scaffold-theme' )
 		     ->setDescription( 'Bootstrap a new WordPress theme using Be API\'s frontend framework.' )
 		     ->addArgument( 'folder', InputArgument::REQUIRED, "Your theme's folder name" )
-		     ->addOption( 'boilerplate-version', null, InputOption::VALUE_OPTIONAL, 'Wich version to use ?', 'Latest' )
+		     ->addOption( 'boilerplate-version', null, InputOption::VALUE_OPTIONAL, 'Which version to use ?', 'Latest' )
 		     ->addOption( 'no-autoload', null, InputOption::VALUE_NONE, 'Autoload the class into composer.json' );
 	}
 
@@ -207,6 +207,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$themeNamespace = $this->askForThemeNamespace( $io, $output );
 
 		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
+		$this->doStrReplace( $themePath . '/inc', 'beapi-frontend-framework', $themePath );
 		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
 
 		/**

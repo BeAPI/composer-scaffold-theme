@@ -120,7 +120,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$fileList = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $path ), \RecursiveIteratorIterator::SELF_FIRST );
 
 		foreach ( $fileList as $item ) {
-			if ( $item->isFile() && false !== stripos( $item->getPathName(), $extension ) ) {
+			if ( $item->isFile() && ( false !== stripos( $item->getPathName(), $extension ) || 'style.css' === $item->getFileName() ) ) {
 				$content = file_get_contents( $item->getPathName() );
 				file_put_contents( $item->getPathName(), str_replace( $search, $replace, $content ) );
 			}
@@ -207,7 +207,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$themeNamespace = $this->askForThemeNamespace( $io, $output );
 
 		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
-		$this->doStrReplace( $themePath . '/inc', 'beapi-frontend-framework', $themePath );
+		$this->doStrReplace( $themePath, 'beapi-frontend-framework', $themeName );
 		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
 
 		/**

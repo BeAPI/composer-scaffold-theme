@@ -207,10 +207,10 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$themeNamespace = $this->askForThemeNamespace( $io, $output );
 
 		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
+		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
 		// Replace text domain in translations and stylesheets
 		$this->doStrReplace( $themePath, 'beapi-frontend-framework', $themeName );
-		$this->doStrReplace( $themePath, 'beapi-frontend-framework', $themeName, 'css' );
-		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
+		$this->replaceHeaderStyle( $themePath, 'beapi-frontend-framework', $themeName );
 
 		/**
 		 * Add the new namespace to the autoload entry of the composer.json file.

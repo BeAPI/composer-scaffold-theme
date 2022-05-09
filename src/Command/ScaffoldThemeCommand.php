@@ -30,7 +30,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$this->setName( 'scaffold-theme' )
 		     ->setDescription( 'Bootstrap a new WordPress theme using Be API\'s frontend framework.' )
 		     ->addArgument( 'folder', InputArgument::REQUIRED, "Your theme's folder name" )
-		     ->addOption( 'boilerplate-version', null, InputOption::VALUE_OPTIONAL, 'Wich version to use ?', 'Latest' )
+		     ->addOption( 'boilerplate-version', null, InputOption::VALUE_OPTIONAL, 'Which version to use ?', 'Latest' )
 		     ->addOption( 'no-autoload', null, InputOption::VALUE_NONE, 'Autoload the class into composer.json' );
 	}
 
@@ -120,7 +120,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$fileList = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $path ), \RecursiveIteratorIterator::SELF_FIRST );
 
 		foreach ( $fileList as $item ) {
-			if ( $item->isFile() && false !== stripos( $item->getPathName(), $extension ) ) {
+			if ( $item->isFile() && ( false !== stripos( $item->getPathName(), $extension ) || 'style.css' === $item->getFileName() ) ) {
 				$content = file_get_contents( $item->getPathName() );
 				file_put_contents( $item->getPathName(), str_replace( $search, $replace, $content ) );
 			}
@@ -208,6 +208,9 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 		$this->doStrReplace( $themePath, 'BEA\\Theme\\Framework', $themeNamespace );
 		$this->replaceHeaderStyle( $themePath, static::$search, $themeCompleteName );
+		// Replace text domain in translations and stylesheets
+		$this->doStrReplace( $themePath, 'beapi-frontend-framework', $themeName );
+		$this->replaceHeaderStyle( $themePath, 'beapi-frontend-framework', $themeName );
 
 		/**
 		 * Add the new namespace to the autoload entry of the composer.json file.

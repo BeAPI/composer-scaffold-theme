@@ -1,5 +1,8 @@
 # Changelog ##
 
+## 1.3.2 - 9 May 2022
+* Fix issue #8 : replace text domain in translations and stylesheet
+
 ## 1.3.1 - 18 Oct 2021
 * Ensure theme's namespace is unique and not the default one
 

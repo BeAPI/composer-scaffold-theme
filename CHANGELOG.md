@@ -1,5 +1,8 @@
 # Changelog ##
 
+## 1.3.3 - 25 Jul 2022
+* Fix issue #11 : Use the right symfony classes for command return
+
 ## 1.3.2 - 9 May 2022
 * Fix issue #8 : replace text domain in translations and stylesheet
 

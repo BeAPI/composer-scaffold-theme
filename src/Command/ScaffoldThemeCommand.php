@@ -5,6 +5,7 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Json\JsonFile;
 use Composer\Package\Package;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -50,13 +51,14 @@ class ScaffoldThemeCommand extends BaseCommand {
 			$themeName = array_shift( $args );
 			$themeName = str_replace( [ ' ', '-' ], '-', trim( $themeName ) );
 		}
+
 		$io->write( "\nScaffolding theme $themeName" );
 		// Get plugin name
 		if ( empty( $themeName ) ) {
 			$themeName = trim( $io->ask( "What is your theme's folder name ? " ) );
 			if ( empty( $themeName ) ) {
 				$io->write( "Your theme's folder name is invalid" );
-				exit;
+				return Command::INVALID;
 			}
 		}
 
@@ -65,7 +67,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 		if ( is_dir( $themePath ) ) {
 			$io->write( "oops! Theme already exist" );
-			exit;
+			return Command::FAILURE;
 		}
 
 		$themeCompleteName = $io->ask( "What is your theme's real name ? (for headers in style.css)" );
@@ -77,6 +79,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 		$this->generateTheme( $composer, $io, $themeName, $themePath, $themeCompleteName, $downloadPath, $output, $version, $no_autoload );
 		$io->success( "\nYour theme is ready ! :)" );
 		$io->success( 'Run composer dump-autoload to make the autoloading work :)' );
+		return Command::SUCCESS;
 	}
 
 	/**

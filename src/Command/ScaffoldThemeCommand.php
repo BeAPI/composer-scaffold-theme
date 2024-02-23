@@ -225,8 +225,7 @@ class ScaffoldThemeCommand extends BaseCommand {
 
 			try {
 				$composerJson = $composerFile->read();
-				$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = rtrim( $themePath, '/' ) .'/inc/';
-
+				$composerJson['autoload']['psr-4'][$themeNamespace."\\"] = $this->makeAutoloadPath( $themePath, $composer ) .'/inc/';
 
 				$composerFile->write( $composerJson );
 				$output->writeln( "The namespace have been added to the composer.json file !" );
@@ -328,5 +327,26 @@ class ScaffoldThemeCommand extends BaseCommand {
 		}
 
 		return $themeNamespace;
+	}
+
+	/**
+	 * Take the package installation path and prepare it for autoload mapping.
+	 *
+	 * Will take care of converting absolute path to relative one.
+	 *
+	 * @param string $path the package installation path.
+	 * @param Composer $composer the composer instance.
+	 *
+	 * @return string a relative path to the namespace directory which doesn't end with a slash.
+	 */
+	protected function makeAutoloadPath( $path, $composer ) {
+		// Make path relative to package's root.
+		if ( 0 === strpos( $path, '/' ) ) {
+			$composerJsonFilePath = $composer->getConfig()->getConfigSource()->getName();
+			$projectRootPath = dirname( $composerJsonFilePath );
+			$path = str_replace( $projectRootPath, '', $path );
+		}
+
+		return trim( $path, '/' );
 	}
 }

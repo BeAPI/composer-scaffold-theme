@@ -1,5 +1,8 @@
 # Changelog ##
 
+## 1.3.4 - 23 Fev 2024
+* Fix : ensure path to namespace in autoload is always relative to the package root
+
 ## 1.3.3 - 25 Jul 2022
 * Fix issue #11 : Use the right symfony classes for command return
 

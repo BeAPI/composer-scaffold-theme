@@ -1,5 +1,8 @@
 # Changelog ##
 
+## 1.3.5 - 03 Jul 2026
+* Add Be API Block Theme (BBT) boilerplate support
+
 ## 1.3.4 - 23 Fev 2024
 * Fix : ensure path to namespace in autoload is always relative to the package root
 

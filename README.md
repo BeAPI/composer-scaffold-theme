@@ -2,24 +2,57 @@
 
 # Composer Scaffold Theme
 
-External composer command to scaffold a theme with the [BEA Frontend Framework](https://github.com/BeAPI/beapi-frontend-framework).
+External composer command to scaffold a WordPress theme from a Be API boilerplate:
 
-Increase your workflow when creating a new theme. By launching this composer command, you will easily and quickly choose the theme name, namespace and bootstrap your new theme.
+- [Be API Frontend Framework (BFF)](https://github.com/BeAPI/beapi-frontend-framework)
+- [BeAPI Blocks Theme (BBT)](https://github.com/BeAPI/beapi-blocks-theme)
+
+Increase your workflow when creating a new theme. By launching this composer command, you will easily and quickly choose the boilerplate, theme name, namespace and bootstrap your new theme.
 
 # What ?
 
 A simple command to generate a theme skeleton with all the cool features made by the Be API teams.
 
+Two boilerplates are available:
+
+| Key | Boilerplate | Use case |
+|-----|-------------|----------|
+| `bff` | Be API Frontend Framework | Classic PHP theme starter |
+| `bbt` | Be API Blocks Theme | Block theme starter |
+
+If you do not pass the `--boilerplate` option, the command will ask you interactively which boilerplate to use.
+
 # How ?
 
 ## 1 - Add to [Composer](http://composer.rarst.net/)
 
-- ` composer require beapi/composer-scaffold-theme`
+- `composer require beapi/composer-scaffold-theme`
 
+## 2 - Run command
 
-## 2 - Run command 
+```bash
+composer scaffold-theme [--boilerplate|-b bff|bbt] [--boilerplate-version [BOILERPLATE-VERSION]] [--no-autoload] <folder>
+```
 
-Then you can launch `composer scaffold-theme [--boilerplate-version [BOILERPLATE-VERSION]] [--no-autoload] <folder>` :
+**Options:**
+
+- `--boilerplate`, `-b` — Boilerplate to use: `bff` or `bbt` (interactive choice if omitted)
+- `--boilerplate-version` — Git ref to download (branch, tag or commit). Defaults to `Latest`
+- `--no-autoload` — Skip adding the theme namespace to `composer.json` autoload
+- `<folder>` — Your theme's folder name (required)
+
+**Examples:**
+
+```bash
+# Interactive boilerplate choice
+composer scaffold-theme my-theme
+
+# BFF boilerplate
+composer scaffold-theme --boilerplate=bff my-theme
+
+# BBT boilerplate, specific version
+composer scaffold-theme -b bbt --boilerplate-version=1.0.0 my-blocks-theme
+```
 
 # Who ?
 
